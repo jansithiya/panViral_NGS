@@ -5,7 +5,7 @@
 /* define svg width and height for bubble chart */
 
 var margin = {top: 20, bottom: 20, left: 20, right: 20};
-var width = document.getElementById("taxChart").offsetWidth - margin.left - margin.right,
+var width = 1500 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
 var svg = d3.select("#taxChart")
@@ -22,7 +22,7 @@ var pack = d3.pack()
     .padding(10);
 
 //pipeline visualization svg creation and dimensions
-var widthPipeline = document.getElementById("pipeline").offsetWidth - margin.left - margin.right, heightPipeline = 350 - margin.top - margin.bottom;
+var widthPipeline = 1500 - margin.left - margin.right, heightPipeline = 350 - margin.top - margin.bottom;
 var svgPipeline = d3.select("#pipeline")
     .append("svg")
     .attr("width", widthPipeline + margin.left + margin.right)
