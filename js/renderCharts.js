@@ -236,7 +236,7 @@ function bubbleChart(data) {
 
     node.append("title")
         .text(function (d) {
-            return d.data.key + ": " + format(d.value);
+            return d.data.key + ": " + d.value;
         });
 
     node.append("text")
