@@ -18,12 +18,16 @@ The first block of the script parses the xml file and creates array and objects.
 d3.xml("./data/ngs-results.xml", function (error, data) {
 
     var pipeLine = [];
-    var init_endTime = +data.querySelector("init > end-time-ms").textContent,
-        qc1_read_Length = +data.querySelector("qc1 > read-length").textContent
+    var qc1_endTime = +data.querySelector("qc1 > end-time-ms").textContent,
+        qc1_read_Length = +data.querySelector("qc1 > read-length").textContent,
+        qc1_read_count = +data.querySelector("qc1 > read-count").textContent
 
- });
-
-
+        pipeLine.push({
+                    step: "QC1",
+                    reads: qc1_read_count,
+                    endTime: qc1_endTime
+                    })
+    });
 ```
 
 ##### Render/Draw
