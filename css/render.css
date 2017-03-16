@@ -1,0 +1,57 @@
+
+.stepText {
+
+    font-size: 16px;
+    font-family: "Lucida Sans Unicode";
+}
+
+#excludeNA, #chartType {
+    width: 50px;
+    height: 20px;
+    font-size: 10px;
+    margin-left: 40px;
+    display: inline-block;
+
+}
+
+#pipeline {
+
+    margin-top: 30px
+}
+
+select label {
+    margin-top: 10px;
+    font-size: 12px;
+    margin-left: 20px
+
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 150px;
+    height: 50px;
+    padding: 2px;
+    font: 11px sans-serif;
+    background: #bdbdbd;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.axisLabel, .axisTicks {
+
+    font-size: 11px;
+    font-family: "Lucida Sans";
+    color: #525252;
+    fill: #525252;
+
+}
+
+.axisTicks text {
+
+    color: #525252;
+    fill: #525252;
+
+}
+
