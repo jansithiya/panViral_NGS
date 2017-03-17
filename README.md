@@ -13,6 +13,8 @@ Currently the xml input is from the data directory within the project folder how
 
 The first block of the script parses the xml file and creates array and objects.
 
+<b> NOTE: </b>Preprocessing read count needs to be updated in the JavaScript code as the preprocessing tag in xml file did not have the value provided so I used value (QC1-X) = P & (P-Y) = QC2  whereas P is preprocessing reads and X and Y are reads removed from QC1 and Preprocessing
+
 ###### Example
 ```javascript
 d3.xml("./data/ngs-results.xml", function (error, data) {
