@@ -18,8 +18,8 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 //bubble layout
 var pack = d3.pack()
-    .size([400, height])
-    .padding(10);
+    .size([400, height - 100])
+    .padding(5);
 
 //pipeline visualization svg creation and dimensions
 var widthPipeline = 1500 - margin.left - margin.right, heightPipeline = 350 - margin.top - margin.bottom;
@@ -74,20 +74,23 @@ d3.xml("./data/ngs-results.xml", function (error, data) {
         return d.reads;
     });
 
-    /* create an array that stores all the assembly data and taxonomy  associated this is from the assembly tag of the xml file */
+    /* create an array that stores all the assembly data and taxonomy  associated this is from the assembly tag of the xml file
+    *  Note: reads are calculated as (cov * length)/QC2_read_length whereas cov and length are obtained from contig tag
+    * */
     var Assembly_Data = [].map.call(data.querySelectorAll("bucket"), function (bucket) {
 
         if (bucket.querySelector("sequence")) {
             return {
                 bucketId: bucket.querySelector("diamond_bucket").textContent,
-                assigned_name: bucket.querySelector("sequence > conclusion > assigned > name").textContent
-
+                assigned_name: bucket.querySelector("sequence > conclusion > assigned > name").textContent,
+                reads: ((+bucket.querySelector("contigs > contig > cov").textContent) * (+bucket.querySelector("contigs > contig > length").textContent))/qc2_read_Length
             }
         }
         else {
             return {
                 bucketId: bucket.querySelector("diamond_bucket").textContent,
-                assigned_name: "NA"
+                assigned_name: null,
+                reads:null
             }
         }
     });
@@ -95,28 +98,8 @@ d3.xml("./data/ngs-results.xml", function (error, data) {
     console.log(filtering_Data);
     console.log(Assembly_Data);
 
-    // join filtering and assembly to fetch the reads ??? like data join in SQL
-    var merged_data = [];
-
-    for (var i = 0; i < filtering_Data.length; i++) {
-        for (var j = 0; j < Assembly_Data.length; j++) {
-            if (Assembly_Data[j].bucketId == filtering_Data[i].bucketId) {
-                merged_data.push({
-                    bucketId: filtering_Data[i].bucketId,
-                    reads: filtering_Data[i].reads,
-                    sci_name: filtering_Data[i].sci_name,
-                    assigned_name: Assembly_Data[j].assigned_name
-                })
-            }
-
-        }
-    }
-
-    console.log(merged_data);
-
-    //get the unique bucket id and keep only the data
-    var prepared_data = _.uniq(merged_data, function (d) {
-        return d.bucketId;
+    var prepared_data = Assembly_Data.filter(function (d) {
+        return d.reads != null;
     });
     //count the assembly reads
     var Assembly_readCount = d3.sum(prepared_data, function (d) {
@@ -160,16 +143,6 @@ d3.xml("./data/ngs-results.xml", function (error, data) {
 
 function bubbleChart(data) {
 
-    // Title for the bubble chart div
-    var bubbleTitle = svg.append("text")
-        .attr("dx", 120)
-        .attr("dy", 15)
-        .text("BLAST Assigned Name and Reads")
-        .style("font-size", "18px")
-        .style("text-align", "center")
-        .style("fill", "#08306b")
-        .style("font-weight", "bold")
-
     // structure the data in a way to fetch unique assigned name and total read counts
     var nodeData = d3.nest()
         .key(function (d) {
@@ -190,7 +163,7 @@ function bubbleChart(data) {
             return d.value;
         })
         .sort(function (a, b) {
-            return (a.value - b.value);   //sort to pack the bubbles efficiently
+            return -(a.value - b.value);   //sort to pack the bubbles efficiently
         })
         .each(function (d) {
             if (id = d.data.key) {
@@ -201,6 +174,7 @@ function bubbleChart(data) {
         });
 
     pack(root);    //get the x and y positions to layout the bubbles pack
+
 
     var node = svg.selectAll(".node")
         .data(root.children)
@@ -348,7 +322,7 @@ function pipeLineChart(pipeLine) {
             return (i * rectMargin) + (rectHeight) / 2 + 5;
         })
         .text(function (d) {
-            return d.reads;
+            return parseInt(d.reads);
         });
 
 
